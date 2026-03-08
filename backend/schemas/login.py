@@ -5,6 +5,7 @@ from typing import Optional
 class AttendCreate(BaseModel):
     username: str
     position: str
+    password: str
 
 class AttendOut(BaseModel):
     id: int
