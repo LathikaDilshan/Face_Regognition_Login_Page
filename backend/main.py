@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
-from routers import register, login
+from routers import register, login, logout
 from db.database import create_tables
 
 create_tables()
 
 app = FastAPI(
-    title="Face_Regognition_Login_Page",
+    title="Face_Recognition_Login_Page",
     description="api to login by face recognition",
     version="0.1.0",
     docs_url="/docs",
@@ -24,6 +24,7 @@ app.add_middleware(
 
 app.include_router(register.router, prefix=settings.API_PREFIX)
 app.include_router(login.router, prefix=settings.API_PREFIX)
+app.include_router(logout.router, prefix=settings.API_PREFIX)
 
 
 if __name__ == "__main__":

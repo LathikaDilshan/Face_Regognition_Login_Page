@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from db.database import get_db
 from models.register import users
 from schemas.register import UserCreate, UserOut
-from core.security import verify_password
+from core.security import get_password_hash
 
 router = APIRouter(
     prefix="/register",
@@ -22,7 +22,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     # Hash the password
-    hashed_password = verify_password(user.password , )
+    hashed_password = get_password_hash(user.password)
 
     # Create new user record
     new_user = users(

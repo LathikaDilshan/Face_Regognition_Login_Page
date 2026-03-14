@@ -4,15 +4,16 @@ from datetime import datetime
 from db.database import get_db
 from models.login import attend
 from models.register import users
-from schemas.login import AttendCreate, AttendOut
+from schemas.login import AttendCreate, LoginResponse
 from core.security import verify_password, verify_position
+from core.auth import create_access_token
 
 router = APIRouter(
     prefix="/login",
     tags=["Login/Attendance"]
 )
 
-@router.post("/", response_model=AttendOut, status_code=status.HTTP_200_OK)
+@router.post("/", response_model=LoginResponse, status_code=status.HTTP_200_OK)
 def user_login_attendance(attend_in: AttendCreate, db: Session = Depends(get_db)):
     # Verify user exists
     user_exists = db.query(users).filter(users.username == attend_in.username).first()
@@ -42,4 +43,6 @@ def user_login_attendance(attend_in: AttendCreate, db: Session = Depends(get_db)
     db.commit()
     db.refresh(new_attendance)
     
-    return new_attendance
+    access_token = create_access_token(data={"sub": new_attendance.username, "attend_id": new_attendance.id})
+    
+    return {"access_token": access_token, "token_type": "bearer", "attendance": new_attendance}

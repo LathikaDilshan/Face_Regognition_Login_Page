@@ -12,6 +12,20 @@ class AttendOut(BaseModel):
     username: str
     attend_time: datetime
     position: str
+    logout_time: Optional[datetime] = None
 
     class Config:
         from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+    attend_id: Optional[int] = None
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str
+    attendance: AttendOut

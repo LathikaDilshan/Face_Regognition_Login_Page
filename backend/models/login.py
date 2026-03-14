@@ -9,3 +9,4 @@ class attend(Base):
     username = Column(String, index=True)
     attend_time = Column(DateTime, index=True)
     position = Column(String, index=True)
+    logout_time = Column(DateTime, nullable=True)
