@@ -5,7 +5,7 @@ from db.database import get_db
 from models.login import attend
 from models.register import users
 from schemas.login import AttendCreate, AttendOut
-from core.security import verify_password
+from core.security import verify_password, verify_position
 
 router = APIRouter(
     prefix="/login",
@@ -21,16 +21,19 @@ def user_login_attendance(attend_in: AttendCreate, db: Session = Depends(get_db)
     if not user_exists:
         raise HTTPException(status_code=404, detail="User not found")
 
-        # Verify password
+    # Verify password
     if not verify_password(attend_in.password, user_exists.password):
         raise HTTPException(status_code=401, detail="Incorrect password")
+
+    # Verify position
+    if not verify_position(attend_in.position, user_exists.position):
+        raise HTTPException(status_code=401, detail="Incorrect position")
 
     now = datetime.now()
     
     # Store attendance log
     new_attendance = attend(
         username=attend_in.username,
-        attend_date=now.date(),
         attend_time=now,
         position=attend_in.position
     )

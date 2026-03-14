@@ -10,7 +10,6 @@ class AttendCreate(BaseModel):
 class AttendOut(BaseModel):
     id: int
     username: str
-    attend_date: datetime
     attend_time: datetime
     position: str
 

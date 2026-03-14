@@ -5,3 +5,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+def verify_position(plain_position: str, db_position: str) -> bool:
+    if plain_position == db_position:
+        return True
+    else:
+        return False
