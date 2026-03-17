@@ -16,10 +16,17 @@ export const api = {
     async request(endpoint, options = {}) {
         const url = `${BASE_URL}${endpoint}`;
         
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        };
+        let headers = {};
+        
+        // If data is FormData, do not set Content-Type so browser sets boundary automatically
+        if (options.body && options.body instanceof FormData) {
+            headers = { ...options.headers };
+        } else {
+            headers = {
+                'Content-Type': 'application/json',
+                ...options.headers,
+            };
+        }
 
         const token = this.getToken();
         if (token) {
@@ -51,7 +58,7 @@ export const api = {
     register: (userData) => {
         return api.request('/register/', {
             method: 'POST',
-            body: JSON.stringify(userData)
+            body: userData
         });
     },
 
