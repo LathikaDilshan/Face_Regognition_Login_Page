@@ -53,3 +53,30 @@ class FaceRecognitionDB:
             metadatas=metadatas,
             ids=ids
         )
+
+    def query(self, embeddings, n=100):
+        # get top n embeddings similar to given embedding using Cosine Similarity
+        return self.db.query(
+            query_embeddings=embeddings,
+            n_results=n,
+            include=['embeddings', 'metadatas']
+        )
+
+    def recognise_class(self, embeddings):
+        # recognition of class on given embedding. (The Classification Task Using Cosine Similarity)
+        # Note: embeddings should be a list of lists or numpy arrays
+        results = self.query(embeddings)
+        all_tmps = []
+        
+        for metadata_ in results['metadatas']:
+            tmp = {}
+            for index, metadata in enumerate(metadata_):
+                cls = metadata['cls'] # We store 'cls' in store_user_embeddings
+                if cls not in tmp:
+                    tmp[cls] = []
+                tmp[cls].append(index)
+
+            tmp = {k: sum(v) / len(v) for k, v in tmp.items()}
+            all_tmps.append(tmp)
+
+        return all_tmps

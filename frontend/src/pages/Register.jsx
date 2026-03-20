@@ -83,6 +83,7 @@ function Register() {
 
         setCapturedImages(images);
         setIsScanning(false);
+        stopWebcam(); // Turn off camera automatically
     };
 
     const handleChange = (e) => {

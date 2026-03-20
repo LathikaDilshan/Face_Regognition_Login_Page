@@ -65,7 +65,7 @@ export const api = {
     login: (credentials) => {
         return api.request('/login/', {
             method: 'POST',
-            body: JSON.stringify(credentials)
+            body: credentials instanceof FormData ? credentials : JSON.stringify(credentials)
         });
     },
 

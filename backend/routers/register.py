@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Form, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, status, Form, File, UploadFile, BackgroundTasks
 from sqlalchemy.orm import Session
 from db.database import get_db
 from models.register import users
@@ -6,6 +6,7 @@ from schemas.register import UserCreate, UserOut
 from core.security import get_password_hash
 from typing import List
 from services.face_service import FaceRecognitionDB
+from services.model import retrain_model
 import io
 from PIL import Image
 
@@ -19,6 +20,7 @@ router = APIRouter(
 
 @router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def register_user(
+    background_tasks: BackgroundTasks,
     username: str = Form(...),
     email: str = Form(...),
     position: str = Form(...),
@@ -64,6 +66,7 @@ async def register_user(
 
         if embeddings:
             face_db.store_user_embeddings(user_id=new_user.id, embeddings=embeddings)
+            background_tasks.add_task(retrain_model)
         else:
             print("Warning: No faces detected in the provided images for user", new_user.username)
     except Exception as e:
