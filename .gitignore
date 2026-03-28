@@ -5,3 +5,5 @@ backend/*.pyc
 backend/.env/
 
 backend/*.sqlite3
+backend/chroma_db
+backend/database.db
